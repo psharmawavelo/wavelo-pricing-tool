@@ -21,6 +21,67 @@
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; }
   .modal-box { background:white; border-radius:14px; padding:28px; width:420px; max-width:94vw; box-shadow:0 20px 60px rgba(0,0,0,0.2); }
 </style>
+
+<style>
+/* Hide Sign in with Google and Proposal Status - handled by workflow app */
+/* Target the top-right sign-in button container */
+#root > div > div:first-child > button:last-child,
+#root > div > div:first-child > button[onclick*="signIn"],
+#root > div > div:first-child > button[disabled] {
+  display: none !important;
+}
+</style>
+<script>
+(function() {
+  var HIDE_INTERVAL;
+  function hideUI() {
+    var hidden = 0;
+    
+    // Find and hide "Sign in with Google" button AND its wrapper
+    document.querySelectorAll('button').forEach(function(btn) {
+      var txt = (btn.innerText || btn.textContent || '').trim();
+      if (txt === 'Sign in with Google' || txt === 'Signing in…') {
+        // Hide button itself
+        btn.style.setProperty('display', 'none', 'important');
+        // Also hide parent divs that only contain this button
+        var p = btn.parentElement;
+        for (var i = 0; i < 3; i++) {
+          if (p && p.id !== 'root' && (p.children.length === 1 || (p.children.length === 2 && p.querySelector('svg')))) {
+            p.style.setProperty('display', 'none', 'important');
+            p = p.parentElement;
+          } else break;
+        }
+        hidden++;
+      }
+    });
+    
+    // Find and hide Proposal Status section
+    document.querySelectorAll('div').forEach(function(div) {
+      var txt = (div.innerText || div.textContent || '');
+      if (txt.indexOf('PROPOSAL STATUS') !== -1 && 
+          txt.indexOf('select one to set the deal stage') !== -1) {
+        // Make sure it's the outer container, not a deep child
+        var parent = div.parentElement;
+        if (parent && (parent.innerText || parent.textContent || '').indexOf('PROPOSAL STATUS') !== -1) return;
+        div.style.setProperty('display', 'none', 'important');
+        hidden++;
+      }
+    });
+    
+    if (hidden >= 2 && HIDE_INTERVAL) {
+      clearInterval(HIDE_INTERVAL);
+    }
+  }
+  
+  // Run on interval until both are hidden
+  HIDE_INTERVAL = setInterval(hideUI, 200);
+  // Stop trying after 10 seconds
+  setTimeout(function() { clearInterval(HIDE_INTERVAL); }, 10000);
+  
+  document.addEventListener('DOMContentLoaded', hideUI);
+})();
+</script>
+
 </head>
 <body>
 <div id="root"></div>
@@ -103,6 +164,67 @@ ${c}\r
   .green{color:#16A34A;font-weight:600;}
   .amber{color:#854F0B;font-weight:600;}
 </style>
+
+<style>
+/* Hide Sign in with Google and Proposal Status - handled by workflow app */
+/* Target the top-right sign-in button container */
+#root > div > div:first-child > button:last-child,
+#root > div > div:first-child > button[onclick*="signIn"],
+#root > div > div:first-child > button[disabled] {
+  display: none !important;
+}
+</style>
+<script>
+(function() {
+  var HIDE_INTERVAL;
+  function hideUI() {
+    var hidden = 0;
+    
+    // Find and hide "Sign in with Google" button AND its wrapper
+    document.querySelectorAll('button').forEach(function(btn) {
+      var txt = (btn.innerText || btn.textContent || '').trim();
+      if (txt === 'Sign in with Google' || txt === 'Signing in…') {
+        // Hide button itself
+        btn.style.setProperty('display', 'none', 'important');
+        // Also hide parent divs that only contain this button
+        var p = btn.parentElement;
+        for (var i = 0; i < 3; i++) {
+          if (p && p.id !== 'root' && (p.children.length === 1 || (p.children.length === 2 && p.querySelector('svg')))) {
+            p.style.setProperty('display', 'none', 'important');
+            p = p.parentElement;
+          } else break;
+        }
+        hidden++;
+      }
+    });
+    
+    // Find and hide Proposal Status section
+    document.querySelectorAll('div').forEach(function(div) {
+      var txt = (div.innerText || div.textContent || '');
+      if (txt.indexOf('PROPOSAL STATUS') !== -1 && 
+          txt.indexOf('select one to set the deal stage') !== -1) {
+        // Make sure it's the outer container, not a deep child
+        var parent = div.parentElement;
+        if (parent && (parent.innerText || parent.textContent || '').indexOf('PROPOSAL STATUS') !== -1) return;
+        div.style.setProperty('display', 'none', 'important');
+        hidden++;
+      }
+    });
+    
+    if (hidden >= 2 && HIDE_INTERVAL) {
+      clearInterval(HIDE_INTERVAL);
+    }
+  }
+  
+  // Run on interval until both are hidden
+  HIDE_INTERVAL = setInterval(hideUI, 200);
+  // Stop trying after 10 seconds
+  setTimeout(function() { clearInterval(HIDE_INTERVAL); }, 10000);
+  
+  document.addEventListener('DOMContentLoaded', hideUI);
+})();
+</script>
+
 </head>
 <body>
 <button class="print-btn no-print" onclick="window.print()">\u{1F5A8} Save as PDF</button>
@@ -241,33 +363,6 @@ ${o==="Value-Based"&&Ht.length>0?`
   <span>Wavelo Engagement Pricing Tool \xB7 Confidential \xB7 For internal use only</span>
   <span>Generated ${new Date().toLocaleString()}</span>
 </div>
-
-<script>
-(function() {
-  function hideWorkflowUI() {
-    // Hide Sign in with Google button
-    document.querySelectorAll('button').forEach(function(btn) {
-      if (btn.textContent.trim().includes('Sign in with Google') || 
-          btn.textContent.trim().includes('Signing in')) {
-        btn.closest('div') && btn.closest('div').parentElement 
-          ? btn.closest('div').style.display = 'none'
-          : btn.style.display = 'none';
-      }
-    });
-    // Hide Proposal Status section
-    document.querySelectorAll('div').forEach(function(div) {
-      if (div.childNodes.length < 10 && 
-          div.textContent.includes('PROPOSAL STATUS') && 
-          div.textContent.includes('select one')) {
-        div.style.display = 'none';
-      }
-    });
-  }
-  // Run multiple times to catch after React renders
-  [300, 800, 1500, 3000].forEach(function(t) { setTimeout(hideWorkflowUI, t); });
-})();
-</script>
-
 </body>
 </html>`,ut=window.open("","_blank");if(ut)ut.document.write(lt),ut.document.close();else{let M=new Blob([lt],{type:"text/html"}),J=document.createElement("a");J.href=URL.createObjectURL(M),J.download=`Wavelo_Deal_Summary_${(t.clientName||"Client").replace(/\s+/g,"_")}_${new Date().toISOString().slice(0,10)}.html`,document.body.appendChild(J),J.click(),document.body.removeChild(J),URL.revokeObjectURL(J.href)}},style:{padding:"10px 28px",borderRadius:8,border:"none",background:"#5527E3",color:"white",cursor:"pointer",fontSize:13,fontWeight:600,boxShadow:"0 2px 8px #5527E340"},children:"\u{1F4C4} Export deal summary (Print \u2192 Save as PDF)"})]})]})}function km({text:t,children:e}){let[l,a]=(0,Q.useState)(!1);return(0,i.jsxs)("span",{style:{position:"relative",display:"inline-flex",alignItems:"center",gap:3},onMouseEnter:()=>a(!0),onMouseLeave:()=>a(!1),children:[e,(0,i.jsx)("span",{style:{width:14,height:14,borderRadius:"50%",background:"#DDD4F9",color:"#5527E3",fontSize:9,fontWeight:700,display:"inline-flex",alignItems:"center",justifyContent:"center",cursor:"help",flexShrink:0},children:"?"}),l&&(0,i.jsx)("span",{style:{position:"absolute",bottom:"calc(100% + 6px)",left:0,background:"#190849",color:"white",fontSize:11,padding:"7px 10px",borderRadius:6,zIndex:999,maxWidth:260,whiteSpace:"normal",lineHeight:1.5,boxShadow:"0 4px 16px rgba(0,0,0,0.25)",pointerEvents:"none"},children:t})]})}function Ci({icon:t,title:e,sub:l,tip:a}){return(0,i.jsxs)("div",{style:{marginBottom:20,paddingBottom:14,borderBottom:"2px solid #EEE9FC"},children:[(0,i.jsxs)("p",{style:{fontSize:20,fontWeight:700,margin:"0 0 4px",display:"flex",alignItems:"center",gap:8,color:"#190849"},children:[(0,i.jsx)("span",{style:{fontSize:22},children:t}),e]}),l&&(0,i.jsx)("p",{style:{fontSize:13,color:"var(--color-text-secondary)",margin:a?"0 0 10px":0},children:l}),a&&(0,i.jsxs)("div",{style:{background:"#F6F4FE",border:"1px solid #DDD4F9",borderRadius:7,padding:"8px 12px",fontSize:12,color:"#331788",display:"flex",gap:8,alignItems:"flex-start"},children:[(0,i.jsx)("span",{style:{flexShrink:0},children:"\u{1F4A1}"}),(0,i.jsx)("span",{children:a})]})]})}function Sn({label:t,required:e,hint:l,children:a,tooltip:n}){return(0,i.jsxs)("div",{style:{marginBottom:16},children:[(0,i.jsxs)("label",{style:{fontSize:12,fontWeight:600,color:"#190849",display:"flex",alignItems:"center",gap:4,marginBottom:6},children:[n?(0,i.jsx)(km,{text:n,children:t}):t,e&&(0,i.jsx)("span",{style:{color:"#993C1D",fontSize:11},children:"*"}),l&&(0,i.jsx)("span",{style:{fontWeight:400,fontSize:11,color:"var(--color-text-secondary)",marginLeft:2},children:l})]}),a]})}function rg({label:t,active:e,onClick:l}){return(0,i.jsxs)("button",{onClick:l,style:{padding:"9px 14px",borderRadius:8,border:e?"2px solid #5527E3":"1.5px solid #DDD4F9",background:e?"#EEE9FC":"white",cursor:"pointer",fontSize:12,fontWeight:e?600:400,color:e?"#5527E3":"var(--color-text-secondary)",textAlign:"left",transition:"all 0.1s",boxShadow:e?"0 0 0 3px #5527E315":"none"},children:[e&&(0,i.jsx)("span",{style:{marginRight:6},children:"\u2713"}),t]})}function sc({onBack:t,onNext:e,nextDisabled:l,nextLabel:a}){return(0,i.jsxs)("div",{style:{display:"flex",justifyContent:"space-between",marginTop:24,paddingTop:16,borderTop:"2px solid #EEE9FC"},children:[t?(0,i.jsx)("button",{onClick:t,style:{padding:"11px 22px",borderRadius:8,border:"1.5px solid #DDD4F9",background:"white",cursor:"pointer",fontSize:13,fontWeight:500,color:"#331788"},children:"\u2190 Back"}):(0,i.jsx)("div",{}),e&&(0,i.jsx)("button",{onClick:e,disabled:l,style:{padding:"11px 28px",borderRadius:8,border:"none",background:l?"#E5E7EB":"#5527E3",color:l?"#9CA3AF":"white",cursor:l?"not-allowed":"pointer",fontSize:13,fontWeight:600,boxShadow:l?"none":"0 2px 8px #5527E340"},children:a||"Continue \u2192"})]})}function ts(){return{width:"100%",fontSize:13,padding:"9px 12px",borderRadius:6,border:"1.5px solid #DDD4F9",background:"white",color:"#1A1821",boxSizing:"border-box",fontFamily:"'Poppins','Montserrat',sans-serif"}}function hg({model:t,finalPrice:e,subMonthlyFee:l,retainerMonthly:a,blendedRate:n,grossMargin:o,ebitdaActual:c}){let u=t==="Time & Materials"?`$${Math.round(n)}/hr`:t==="Subscription"?`${d(l)}/mo MRR`:t==="Retainer"?`${d(a)}/mo`:d(e),r=o>=60,g=c>=30;return(0,i.jsxs)("div",{style:{position:"sticky",top:0,zIndex:100,background:"#190849",borderRadius:10,padding:"10px 16px",marginBottom:16,display:"flex",justifyContent:"space-between",alignItems:"center",boxShadow:"0 4px 16px #19084940"},children:[(0,i.jsxs)("div",{children:[(0,i.jsx)("p",{style:{fontSize:10,color:"#DDD4F9",margin:"0 0 1px",fontWeight:600,letterSpacing:"0.06em",textTransform:"uppercase"},children:t}),(0,i.jsx)("p",{style:{fontSize:22,fontWeight:700,color:"white",margin:0},children:u})]}),(0,i.jsx)("div",{style:{display:"flex",gap:20},children:[["Gross margin",ft(o),r],["EBITDA",ft(c),g]].map(([S,x,p])=>(0,i.jsxs)("div",{style:{textAlign:"right"},children:[(0,i.jsx)("p",{style:{fontSize:10,color:"#DDD4F9",margin:"0 0 1px"},children:S}),(0,i.jsxs)("p",{style:{fontSize:16,fontWeight:700,margin:0,color:p?"#86EFAC":"#FCD34D"},children:[x," ",p?"\u2713":"\u26A0"]})]},S))})]})}var sg=["Welcome","Project","Team","Strategy","Review","Deck"];function Wm({step:t}){return(0,i.jsxs)("div",{style:{marginBottom:20},children:[(0,i.jsx)("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:6},children:sg.map((e,l)=>(0,i.jsxs)("div",{style:{display:"flex",flexDirection:"column",alignItems:"center",flex:1},children:[(0,i.jsx)("div",{style:{width:24,height:24,borderRadius:"50%",background:l<t?"#190849":l===t?"#5527E3":"var(--color-background-secondary)",border:l===t?"2px solid #5527E3":"0.5px solid var(--color-border-tertiary)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:500,color:l<=t?"white":"var(--color-text-secondary)",marginBottom:3},children:l<t?"\u2713":l+1}),(0,i.jsx)("span",{style:{fontSize:9,color:l===t?"#5527E3":l<t?"#190849":"var(--color-text-secondary)",fontWeight:l===t?500:400,textAlign:"center"},children:e})]},e))}),(0,i.jsx)("div",{style:{height:3,borderRadius:2,background:"var(--color-background-secondary)",position:"relative"},children:(0,i.jsx)("div",{style:{position:"absolute",left:0,top:0,height:"100%",borderRadius:2,background:"#190849",width:`${t/(sg.length-1)*100}%`,transition:"width 0.3s"}})})]})}function Vm({status:t,clientName:e,onSend:l,onSkip:a,sending:n}){let[o,c]=Q.default.useState(""),[u,r]=Q.default.useState(""),g=WORKFLOW.find(S=>S.id===t)||WORKFLOW[0];return(0,i.jsx)("div",{className:"modal-overlay",onClick:S=>{S.target===S.currentTarget&&a()},children:(0,i.jsxs)("div",{className:"modal-box",children:[(0,i.jsxs)("p",{style:{fontSize:17,fontWeight:600,color:"#190849",margin:"0 0 6px"},children:["Notify a colleague? ",g.icon]}),(0,i.jsxs)("p",{style:{fontSize:12,color:"#6B7280",margin:"0 0 16px",lineHeight:1.6},children:["You moved ",(0,i.jsx)("b",{children:e||"this deal"})," to ",(0,i.jsx)("b",{children:g.label}),".",(0,i.jsx)("br",{}),"Enter their email and they'll get a direct link. Or skip."]}),(0,i.jsx)("input",{type:"email",value:o,onChange:S=>c(S.target.value),placeholder:"colleague@wavelo.com",autoFocus:!0,style:{width:"100%",padding:"10px 12px",borderRadius:7,border:"1.5px solid #DDD4F9",fontSize:13,marginBottom:10,fontFamily:"Poppins,sans-serif",outline:"none"}}),(0,i.jsx)("textarea",{value:u,onChange:S=>r(S.target.value),rows:3,placeholder:"Optional message, e.g. 'Please review the margin on section 3'",style:{width:"100%",padding:"10px 12px",borderRadius:7,border:"1.5px solid #DDD4F9",fontSize:12,resize:"vertical",marginBottom:16,fontFamily:"Poppins,sans-serif",outline:"none"}}),(0,i.jsxs)("div",{style:{display:"flex",justifyContent:"flex-end",gap:8},children:[(0,i.jsx)("button",{onClick:a,style:{padding:"9px 18px",borderRadius:7,border:"1.5px solid #e5e7eb",background:"white",cursor:"pointer",fontSize:13,color:"#6B7280"},children:"Skip"}),(0,i.jsx)("button",{onClick:()=>l(o,u),disabled:!o.includes("@")||n,style:{padding:"9px 20px",borderRadius:7,border:"none",background:"#5527E3",color:"white",cursor:"pointer",fontSize:13,fontWeight:600,opacity:!o.includes("@")||n?.5:1},children:n?"Sending\u2026":"Send notification \u2192"})]})]})})}function vg(){let[t,e]=Q.default.useState(null),[l,a]=Q.default.useState(!1),[n,o]=Q.default.useState(null),[c,u]=Q.default.useState(!1),[r,g]=Q.default.useState([]),[S,x]=Q.default.useState(!1),[p,m]=Q.default.useState(""),[N,G]=Q.default.useState(!1),[$,y]=Q.default.useState(null),[s,h]=Q.default.useState(!1),[v,Y]=Q.default.useState(!1),[j,F]=Q.default.useState(""),[k,q]=Q.default.useState(""),[P,Tt]=Q.default.useState(!1),it=[{id:"draft",label:"Draft",icon:"\u270F\uFE0F",color:"#6B7280",desc:"Being built"},{id:"review",label:"Review",icon:"\u{1F50D}",color:"#854F0B",desc:"Under review"},{id:"approved",label:"Approved",icon:"\u2705",color:"#16A34A",desc:"Deal approved"},{id:"rejected",label:"Rejected",icon:"\u274C",color:"#993C1D",desc:"Deal rejected"}],de=["draft","review","approved"],[ct,wt]=Q.default.useState(0),[Rt,ze]=Q.default.useState(null),Ht=Rt?de.indexOf(Rt):-1,[Ft,Ae]=Q.default.useState({clientName:"",engType:"Data Strategy Assessment",durationMonths:6,projectBrief:"",complexityLevel:"Standard Engagement",deliveryModel:"Hybrid (50/50)"}),re=(z,V)=>Ae(K=>({...K,[z]:V})),St=Ft.engType==="Bundled Engagement",[Ne,ae]=Q.default.useState(32),Yt=Math.max(Ne,Ti),C=z=>{let V=Math.max(z,Ti);ae(V),kt(K=>K<=V?V:K)},[f,E]=Q.default.useState(ng.map(z=>({...z}))),[B,b]=Q.default.useState(ig.map(z=>({...z}))),[T,R]=Q.default.useState(og.map(z=>({...z}))),[D,H]=Q.default.useState([{eng:"Data Strategy Assessment",multiplier:1},{eng:"Enterprise Data Roadmap",multiplier:1}]),[X,tt]=Q.default.useState({}),[L,W]=Q.default.useState({}),[_,w]=Q.default.useState({}),[A,U]=Q.default.useState("Fixed Fee"),[Z,at]=Q.default.useState(cg.map(z=>({...z}))),[lt,ut]=Q.default.useState(5),[M,J]=Q.default.useState(1e5),[rt,zt]=Q.default.useState(15),[I,vt]=Q.default.useState(25),[ht,It]=Q.default.useState(10),[jt,kt]=Q.default.useState(32),[Pe,na]=Q.default.useState(0),[Xe,Qe]=Q.default.useState(ug.map(z=>({...z}))),ia=Q.default.useMemo(()=>St?T.reduce((z,V,K)=>{if(!V.active)return z;let Wt=D.filter(Pt=>(_[K]||{})[Pt.eng]||!1).length;return z+(V.cost||0)*Math.max(Wt,0)},0):T.reduce((z,V)=>V.active?z+(V.cost||0):z,0),[T,St,D,_]),rl=Q.default.useMemo(()=>St?f.reduce((z,V,K)=>z+D.reduce((Wt,Pt)=>Wt+((X[K]||{})[Pt.eng]||0),0)*(V.rate||0),0):f.reduce((z,V)=>z+(V.hours||0)*(V.rate||0),0),[f,St,D,X]),dc=Q.default.useMemo(()=>St?B.reduce((z,V,K)=>{let Wt=D.reduce((Pt,oa)=>{let Oi=(L[K]||{})[oa.eng]||{qty:1,mo:0};return Pt+(Oi.mo||0)*(Oi.qty||1)},0);return z+Wt*(V.monthlyCost||0)},0):B.reduce((z,V)=>z+(V.monthlyCost||0)*(V.qty||1)*(V.months||0),0),[B,St,D,L]),es=Q.default.useMemo(()=>St?f.reduce((z,V,K)=>z+D.reduce((Wt,Pt)=>Wt+((X[K]||{})[Pt.eng]||0),0),0):f.reduce((z,V)=>z+(V.hours||0),0),[f,St,D,X]),{totalCost:Ri,directCOGS:ls,overhead:bg,snm:xg,totalOpex:Sg}=Q.default.useMemo(()=>mg(rl,dc,ia),[rl,dc,ia]),as=Ri>0?Ri/(1-Yt/100):0;Q.default.useEffect(()=>{if(!window.google){let K=document.createElement("script");K.src="https://accounts.google.com/gsi/client",K.async=!0,document.head.appendChild(K)}let V=new URLSearchParams(window.location.search).get("deal");V&&sessionStorage.setItem("wavelo_pending_deal",V)},[]);let ns=()=>{if(lg.includes("YOUR_CLIENT")){alert(`\u2699\uFE0F Setup needed: ask your IT administrator to configure this tool.
 
@@ -330,32 +425,5 @@ react/cjs/react-jsx-runtime.production.js:
    *)
 */
 </script>
-
-<script>
-(function() {
-  function hideWorkflowUI() {
-    // Hide Sign in with Google button
-    document.querySelectorAll('button').forEach(function(btn) {
-      if (btn.textContent.trim().includes('Sign in with Google') || 
-          btn.textContent.trim().includes('Signing in')) {
-        btn.closest('div') && btn.closest('div').parentElement 
-          ? btn.closest('div').style.display = 'none'
-          : btn.style.display = 'none';
-      }
-    });
-    // Hide Proposal Status section
-    document.querySelectorAll('div').forEach(function(div) {
-      if (div.childNodes.length < 10 && 
-          div.textContent.includes('PROPOSAL STATUS') && 
-          div.textContent.includes('select one')) {
-        div.style.display = 'none';
-      }
-    });
-  }
-  // Run multiple times to catch after React renders
-  [300, 800, 1500, 3000].forEach(function(t) { setTimeout(hideWorkflowUI, t); });
-})();
-</script>
-
 </body>
 </html>
