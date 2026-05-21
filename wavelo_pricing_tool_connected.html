@@ -21,67 +21,33 @@
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; }
   .modal-box { background:white; border-radius:14px; padding:28px; width:420px; max-width:94vw; box-shadow:0 20px 60px rgba(0,0,0,0.2); }
 </style>
-
-<style>
-/* Hide Sign in with Google and Proposal Status - handled by workflow app */
-/* Target the top-right sign-in button container */
-#root > div > div:first-child > button:last-child,
-#root > div > div:first-child > button[onclick*="signIn"],
-#root > div > div:first-child > button[disabled] {
-  display: none !important;
-}
-</style>
 <script>
 (function() {
-  var HIDE_INTERVAL;
-  function hideUI() {
+  var timer = setInterval(function() {
     var hidden = 0;
-    
-    // Find and hide "Sign in with Google" button AND its wrapper
     document.querySelectorAll('button').forEach(function(btn) {
-      var txt = (btn.innerText || btn.textContent || '').trim();
-      if (txt === 'Sign in with Google' || txt === 'Signing in…') {
-        // Hide button itself
-        btn.style.setProperty('display', 'none', 'important');
-        // Also hide parent divs that only contain this button
+      if ((btn.innerText||'').trim().indexOf('Sign in with Google') === 0) {
+        btn.style.display = 'none';
         var p = btn.parentElement;
-        for (var i = 0; i < 3; i++) {
-          if (p && p.id !== 'root' && (p.children.length === 1 || (p.children.length === 2 && p.querySelector('svg')))) {
-            p.style.setProperty('display', 'none', 'important');
-            p = p.parentElement;
-          } else break;
-        }
+        if (p) p.style.display = 'none';
         hidden++;
       }
     });
-    
-    // Find and hide Proposal Status section
     document.querySelectorAll('div').forEach(function(div) {
-      var txt = (div.innerText || div.textContent || '');
-      if (txt.indexOf('PROPOSAL STATUS') !== -1 && 
-          txt.indexOf('select one to set the deal stage') !== -1) {
-        // Make sure it's the outer container, not a deep child
-        var parent = div.parentElement;
-        if (parent && (parent.innerText || parent.textContent || '').indexOf('PROPOSAL STATUS') !== -1) return;
-        div.style.setProperty('display', 'none', 'important');
-        hidden++;
+      if ((div.innerText||'').indexOf('PROPOSAL STATUS') > -1 &&
+          (div.innerText||'').indexOf('select one to set the deal stage') > -1) {
+        var p = div.parentElement;
+        if (p && (p.innerText||'').indexOf('PROPOSAL STATUS') === -1) {
+          div.style.display = 'none';
+          hidden++;
+        }
       }
     });
-    
-    if (hidden >= 2 && HIDE_INTERVAL) {
-      clearInterval(HIDE_INTERVAL);
-    }
-  }
-  
-  // Run on interval until both are hidden
-  HIDE_INTERVAL = setInterval(hideUI, 200);
-  // Stop trying after 10 seconds
-  setTimeout(function() { clearInterval(HIDE_INTERVAL); }, 10000);
-  
-  document.addEventListener('DOMContentLoaded', hideUI);
+    if (hidden >= 2) clearInterval(timer);
+  }, 100);
+  setTimeout(function(){ clearInterval(timer); }, 15000);
 })();
 </script>
-
 </head>
 <body>
 <div id="root"></div>
@@ -164,67 +130,33 @@ ${c}\r
   .green{color:#16A34A;font-weight:600;}
   .amber{color:#854F0B;font-weight:600;}
 </style>
-
-<style>
-/* Hide Sign in with Google and Proposal Status - handled by workflow app */
-/* Target the top-right sign-in button container */
-#root > div > div:first-child > button:last-child,
-#root > div > div:first-child > button[onclick*="signIn"],
-#root > div > div:first-child > button[disabled] {
-  display: none !important;
-}
-</style>
 <script>
 (function() {
-  var HIDE_INTERVAL;
-  function hideUI() {
+  var timer = setInterval(function() {
     var hidden = 0;
-    
-    // Find and hide "Sign in with Google" button AND its wrapper
     document.querySelectorAll('button').forEach(function(btn) {
-      var txt = (btn.innerText || btn.textContent || '').trim();
-      if (txt === 'Sign in with Google' || txt === 'Signing in…') {
-        // Hide button itself
-        btn.style.setProperty('display', 'none', 'important');
-        // Also hide parent divs that only contain this button
+      if ((btn.innerText||'').trim().indexOf('Sign in with Google') === 0) {
+        btn.style.display = 'none';
         var p = btn.parentElement;
-        for (var i = 0; i < 3; i++) {
-          if (p && p.id !== 'root' && (p.children.length === 1 || (p.children.length === 2 && p.querySelector('svg')))) {
-            p.style.setProperty('display', 'none', 'important');
-            p = p.parentElement;
-          } else break;
-        }
+        if (p) p.style.display = 'none';
         hidden++;
       }
     });
-    
-    // Find and hide Proposal Status section
     document.querySelectorAll('div').forEach(function(div) {
-      var txt = (div.innerText || div.textContent || '');
-      if (txt.indexOf('PROPOSAL STATUS') !== -1 && 
-          txt.indexOf('select one to set the deal stage') !== -1) {
-        // Make sure it's the outer container, not a deep child
-        var parent = div.parentElement;
-        if (parent && (parent.innerText || parent.textContent || '').indexOf('PROPOSAL STATUS') !== -1) return;
-        div.style.setProperty('display', 'none', 'important');
-        hidden++;
+      if ((div.innerText||'').indexOf('PROPOSAL STATUS') > -1 &&
+          (div.innerText||'').indexOf('select one to set the deal stage') > -1) {
+        var p = div.parentElement;
+        if (p && (p.innerText||'').indexOf('PROPOSAL STATUS') === -1) {
+          div.style.display = 'none';
+          hidden++;
+        }
       }
     });
-    
-    if (hidden >= 2 && HIDE_INTERVAL) {
-      clearInterval(HIDE_INTERVAL);
-    }
-  }
-  
-  // Run on interval until both are hidden
-  HIDE_INTERVAL = setInterval(hideUI, 200);
-  // Stop trying after 10 seconds
-  setTimeout(function() { clearInterval(HIDE_INTERVAL); }, 10000);
-  
-  document.addEventListener('DOMContentLoaded', hideUI);
+    if (hidden >= 2) clearInterval(timer);
+  }, 100);
+  setTimeout(function(){ clearInterval(timer); }, 15000);
 })();
 </script>
-
 </head>
 <body>
 <button class="print-btn no-print" onclick="window.print()">\u{1F5A8} Save as PDF</button>
